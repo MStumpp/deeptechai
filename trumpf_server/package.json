@@ -31,6 +31,5 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js --watch . --watch api/swagger/swagger.yaml",
-    "test": "mocha test/api/controllers/FamilyAndFriendsService.js --exit"
   }
 }

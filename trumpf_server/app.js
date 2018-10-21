@@ -35,49 +35,6 @@ app.all('/', function(req, resp) {
     resp.redirect('/docs');
 });
 
-// function initDb() {
-//     return co(function* () {
-//         //let p = new PositionHistory({ id: 122, address: 'ssss', x: 12.12, y: 12.12, z: 23.23, timestamp: 2323232322323 })
-//         //p.save()
-
-//         var lineReader = require('readline').createInterface({
-//           input: require('fs').createReadStream('/Users/matthiasstumpp/Workspace/trumpf_server/data/position_history_new_starts_at_01.07.2018.tsv')
-//         });
-
-//         let ops = []
-//         let count = 0
-//         let maxCount = 100
-
-//         lineReader.on('line', function (line) {
-//             return co(function* () {
-//                 //console.log('Line from file:', line);
-//                 var tabs = line.split('\t');
-//                 console.log(tabs[0])
-//                 console.log(tabs[1])
-//                 console.log(tabs[2])
-//                 console.log(tabs[3])
-//                 console.log(tabs[4])
-//                 console.log(tabs[5])
-
-//                 // let p = new PositionHistory({ id: parseInt(tabs[0]), address: tabs[1], 
-//                 //     x: parseFloat(tabs[2]), y: parseFloat(tabs[3]), z: parseFloat(tabs[4]), timestamp: parseInt(tabs[5]) })
-//                 // p.save()
-
-//                 ops.push(new PositionHistory({ id: parseInt(tabs[0]), address: tabs[1], 
-//                     x: parseFloat(tabs[2]), y: parseFloat(tabs[3]), z: parseFloat(tabs[4]), timestamp: parseInt(tabs[5]) }))
-
-//                 count += 1
-
-//                 if (count === maxCount) {
-//                     yield PositionHistory.insertMany(ops);
-//                     count = 0
-//                     ops = []
-//                 }
-//             });
-//         });
-//     });
-// }
-
 // Initialize the Swagger middleware
 swaggerTools.initializeMiddleware(swaggerDoc, function(middleware) {
     // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
