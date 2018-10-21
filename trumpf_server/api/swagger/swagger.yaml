@@ -1,0 +1,157 @@
+---
+swagger: '2.0'
+info:
+  version: 0.1.0
+  title: Trumpf Backend
+schemes:
+- http
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  "/positions":
+    get:
+      tags:
+      - Positions
+      description: "Zeige alle Positions je Address."
+      operationId: 'positions'
+      parameters:
+      - name: address
+        in: query
+        type: string
+      - name: start
+        in: query
+        type: integer
+      - name: end
+        in: query
+        type: integer
+      responses:
+        '200':
+          description: List of Positions.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Position'
+        '400':
+          description: 'interner fehler!<br/>sonstiger fehler!'
+          schema:
+            properties:
+              fehler:
+                type: string
+    x-swagger-router-controller: trumpf
+  "/addresses":
+    get:
+      tags:
+      - Addresses
+      description: "Zeige alle Addresses."
+      operationId: 'addresses'
+      responses:
+        '200':
+          description: List of Addresses.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Address'
+        '400':
+          description: 'interner fehler!<br/>sonstiger fehler!'
+          schema:
+            properties:
+              fehler:
+                type: string
+    x-swagger-router-controller: trumpf
+  "/areas":
+    get:
+      tags:
+      - Areas
+      description: "Zeige alle Areas."
+      operationId: 'areas'
+      parameters:
+      - name: address
+        in: query
+        type: string
+      - name: start
+        in: query
+        type: integer
+      - name: end
+        in: query
+        type: integer
+      responses:
+        '200':
+          description: List of Areas.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Area'
+        '400':
+          description: 'interner fehler!<br/>sonstiger fehler!'
+          schema:
+            properties:
+              fehler:
+                type: string
+    x-swagger-router-controller: trumpf
+  "/kpis":
+    get:
+      tags:
+      - KPI
+      description: "Zeige alle KPIs."
+      operationId: 'kpis'
+      parameters:
+      - name: address
+        in: query
+        type: string
+      - name: start
+        in: query
+        type: integer
+      - name: end
+        in: query
+        type: integer
+      responses:
+        '200':
+          description: List of KPIs.
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/KPI'
+        '400':
+          description: 'interner fehler!<br/>sonstiger fehler!'
+          schema:
+            properties:
+              fehler:
+                type: string
+    x-swagger-router-controller: trumpf
+definitions:
+  Position:
+    type: object
+    properties:
+      address:
+        type: string
+      x:
+        type: number
+      y:
+        type: number
+      z:
+        type: number
+      timestamp:
+        type: integer
+  Address:
+    type: object
+    properties:
+      address:
+        type: string
+  Area:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      shape:
+        type: object
+  KPI:
+    type: object
+    properties:
+      avgWaitTime:
+        type: number
+      avgProcTime:
+        type: number

@@ -1,0 +1,36 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "New Swagger API Project",
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "main": "app.js",
+  "dependencies": {
+    "assert": "1.4.1",
+    "async": "^2.5.0",
+    "chalk": "^2.2.0",
+    "express": "4.16.4",
+    "gulp": "^3.9.1",
+    "gulp-replace": "^0.6.1",
+    "moment": "^2.19.1",
+    "moment-range": "4.0.1",
+    "swagger-tools": "^0.10.3",
+    "uuid": "^3.1.0",
+    "co": "^4.6.0",
+    "lodash": "^4.17.4",
+    "mongodb": "2.2.35",
+    "mongoose": "5.3.1",
+    "mongoose-long": "0.2.1"
+  },
+  "devDependencies": {
+    "should": "^7.1.0",
+    "supertest": "^1.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js --watch . --watch api/swagger/swagger.yaml",
+    "test": "mocha test/api/controllers/FamilyAndFriendsService.js --exit"
+  }
+}
