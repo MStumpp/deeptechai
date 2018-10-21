@@ -42,9 +42,6 @@ module.exports.positions = function(inputData) {
             address : Long.fromString(address)
         }).sort({ timestamp : 1 })
 
-        start = start ? moment(new Date(start)).utc() : moment().utc().add(-24, 'hours')
-        end = end ? moment(new Date(end)).utc() : moment().utc()
-
         let response = {
             positions: positions
         }
@@ -77,9 +74,32 @@ module.exports.areas = function(inputData) {
         start = start ? moment(new Date(start)).utc() : moment().utc().add(-24, 'hours')
         end = end ? moment(new Date(end)).utc() : moment().utc()
 
+        let positions = yield PositionHistory.find({
+            timestamp: {
+                $gte: Long.fromString(start.toDate().getTime()+''),
+                $lt: Long.fromString(end.toDate().getTime()+'')
+            },
+            address : Long.fromString(address)
+        }).sort({ timestamp : 1 })
+
+        let area = null
+        if (positions && positions.length > 0) {
+            let pos = positions[positions.length-1]
+            area = Area.findOne({shape:
+                {$geoIntersects:
+                    {$geometry:{ "type" : "Point",
+                        "coordinates" : [ pos[i].x, pos[i].y ] }
+                    }
+                }
+            });
+        }
+
         let areas = yield Area.find({})
 
-        return areas
+        return {
+            areas : areas,
+            currentArea : area
+        }
     })
 }
 
@@ -98,9 +118,51 @@ module.exports.kpis = function(inputData) {
         start = start ? moment(new Date(start)).utc() : moment().utc().add(-24, 'hours')
         end = end ? moment(new Date(end)).utc() : moment().utc()
 
+        console.log(start)
+        console.log(end)
+        console.log(address)
+
+        let positions = yield PositionHistory.find({
+            timestamp: {
+                $gte: Long.fromString(start.toDate().getTime()+''),
+                $lt: Long.fromString(end.toDate().getTime()+'')
+            }
+        }).sort({ timestamp : 1 })
+
+        let sumWaitTime = 0
+        let countWaitTime = 0
+        let sumProcTime = 0
+        let countProcTime = 0
+        let prevArea = null
+
+        for (var i=0; i<positions.length; i++) {
+
+            if (i===0) {
+                continue
+            }
+
+            let area = Area.findOne({shape:
+                {$geoIntersects:
+                    {$geometry:{ "type" : "Point",
+                        "coordinates" : [ positions[i].x, positions[i].y ] }
+                    }
+                }
+            });
+
+            if (prevArea && area && area._id !== prevArea._id) {
+                sumWaitTime += positions[i].timestamp - positions[i-1].timestamp
+                countWaitTime += 1
+            } else {
+                sumProcTime += positions[i].timestamp - positions[i-1].timestamp
+                countProcTime += 1
+            }
+
+            prevArea = area
+        }
+
         let kpis = {
-            avgWaitTime: 12.34,
-            avgProcTime: 45.45
+            avgWaitTime: (countWaitTime === 0 ? 0.0 : ((sumWaitTime / countWaitTime) / 1000).toFixed(2)),
+            avgProcTime: (countProcTime === 0 ? 0.0 : ((sumProcTime / countProcTime) / 1000).toFixed(2))
         }
 
         return kpis

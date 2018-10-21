@@ -52,12 +52,16 @@ class Home extends React.Component {
 	     	showPositions: true,
 	     	showImportantAreas: false,
 	     	showAreas: false,
-	     	image: ''
+	     	image: '',
+	     	currentArea: null
 	    };	
 	}
 
 	componentDidMount() {
 		this.fetchAddresses()
+		this.fetchPositions()
+		this.fetchAreas()
+		this.fetchKPI()
 	}
 
 	fetchAddresses() {
@@ -91,8 +95,10 @@ class Home extends React.Component {
 			areas : []
 		}, () => {
 			client({method: 'GET', path: 'http://localhost:8080/areas?address=' + this.state.currentAddress + '&start=' + this.state.start + '&end=' + this.state.end}).done(response => {
+				console.log(response.entity.currentArea)
 				this.setState({
-					areas : response.entity
+					areas : response.entity.areas,
+					currentArea : response.entity.currentArea
 				})
 			})
 		})
@@ -198,6 +204,11 @@ class Home extends React.Component {
 		console.log('prevClick')
 		this.setState({
 			start: this.state.start.subtract(1, 'days')
+		}, () => {
+			this.fetchAddresses()
+			this.fetchPositions()
+			this.fetchAreas()
+			this.fetchKPI()
 		}) 
 	}
 
@@ -205,7 +216,12 @@ class Home extends React.Component {
 		console.log('nextClick')
 		this.setState({
 	     	end: this.state.end.add(1, 'days')
-		})
+		}, () => {
+			this.fetchAddresses()
+			this.fetchPositions()
+			this.fetchAreas()
+			this.fetchKPI()
+		}) 
 	}
 
 	render() {
@@ -280,10 +296,10 @@ class Home extends React.Component {
 							</svg>    
 							<footer className="footer">
 								{this.state.showPositions && (
-									<img src={"/" + this.state.currentAddress + '_' + this.state.start.format("DD-MM-YYYY") + '_' + this.state.end.format("DD-MM-YYYY") + '_positions.png'} alt="" useMap="#Map" name="#Map" id="map" style={{'zIndex': -1}} width="1000"/>
+									<img src={"/" + this.state.currentAddress + '_' + this.state.start.format("YYYY-MM-DD") + '_' + this.state.end.format("YYYY-MM-DD") + '_positions.png'} alt="" useMap="#Map" name="#Map" id="map" style={{'zIndex': -1}} width="1000"/>
 								)}
 								{this.state.showImportantAreas && (
-									<img src={"/" + this.state.currentAddress + '_' + this.state.start.format("DD-MM-YYYY") + '_' + this.state.end.format("DD-MM-YYYY") + '_area.png'} alt="" useMap="#Map" name="#Map" id="map" style={{'zIndex': -1}} width="1000"/>
+									<img src={"/" + this.state.currentAddress + '_' + this.state.start.format("YYYY-MM-DD") + '_' + this.state.end.format("YYYY-MM-DD") + '_area.png'} alt="" useMap="#Map" name="#Map" id="map" style={{'zIndex': -1}} width="1000"/>
 								)}
 								{this.state.showAreas && (
 									<img src={"/map.png"} alt="" useMap="#Map" name="#Map" id="map" style={{'zIndex': -1}} width="1000"/>
@@ -324,11 +340,11 @@ class Home extends React.Component {
 					 	</Col>
 					</Row>
 					<Row>
-					 	<Col xs="5" className="row-buffer" style={{backgroundColor:'#E8E8E8', padding:'20px', margin:'5px' }}>
-					 		<center><b>Avg. Wait time:<br/>{this.state.kpi.avgWaitTime}</b></center>
+					 	<Col xs="5" className="row-buffer" style={{backgroundColor:'#00FF00', padding:'20px', margin:'5px' }}>
+					 		<center><b>Avg. Wait time:<br/>{this.state.kpi.avgWaitTime}s</b></center>
 					 	</Col>
-					 	<Col xs="5" className="row-buffer" style={{backgroundColor:'#E8E8E8', padding:'20px', margin:'5px', marginLeft: '50px'}}>
-					 		<center><b>Avg. Proc time:<br/>{this.state.kpi.avgProcTime}</b></center>
+					 	<Col xs="5" className="row-buffer" style={{backgroundColor:'#FF0000', padding:'20px', margin:'5px', marginLeft: '50px'}}>
+					 		<center><b>Avg. Proc time:<br/>{this.state.kpi.avgProcTime}s</b></center>
 					 	</Col>
 					</Row>
 				</Container>
